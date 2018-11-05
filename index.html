@@ -6,7 +6,89 @@
    </head>
    <body>
       <script>
+         let playerScore = 0;
+         let computerScore = 0;
+         let computerSelection;
+         let playerSelection;
+         const gameRounds = parseInt(prompt('How many rounds would you like to play?'));
+
+
+         game(gameRounds);
          
+         function game(rounds) {
+            let i;
+            let result;
+            for (i = 0; i < rounds; i++) {
+               result = playRound();
+               if (result == 'tie') {
+                  alert('Well no one wins this one, better luck next round.')
+               } else if (result == 'win') {
+                  alert(capitalize(playerSelection) + ' beats ' + computerSelection + ' so you win!');
+                  ++playerScore;
+               } else if (result == 'lose') {
+                  alert(capitalize(computerSelection) + ' beats ' + playerSelection + ' so you lose. :(');
+                  ++computerScore;
+               } else {
+                  alert('Sorry you didn\'t enter a correct value, the computer wins this one.');
+                  ++computerScore;
+               }
+            }
+            if (computerScore == playerScore) {
+               alert('You tied the game with the computer at a score of ' + playerScore + ' : ' + computerScore);
+            } else if (computerScore > playerScore) {
+               alert('You lost the game with a score of ' + playerScore + ' : ' + computerScore);
+            } else {
+               alert('You win the game with a score of ' + playerScore + ' : ' + computerScore);
+            }
+         }
+         
+         function playRound(){
+            computerSelection = computerPlay();
+            playerSelection = prompt('Type rock, paper, or scissors:');
+            playerSelection = playerSelection.trim();
+            playerSelection = playerSelection.toLowerCase();
+            if (playerSelection == computerSelection){
+               return 'tie';
+            } else if (playerSelection == 'rock' && computerSelection == 'paper') {
+               return 'lose';
+            } else if (playerSelection == 'rock' && computerSelection == 'scissors') {
+               return 'win';
+            } else if (playerSelection == 'paper' && computerSelection == 'rock') {
+               return 'win';
+            } else if (playerSelection == 'paper' && computerSelection == 'scissors') {
+               return 'lose';
+            } else if (playerSelection == 'scissors' && computerSelection == 'rock') {
+               return 'lose';
+            } else if (playerSelection == 'scissors' && computerSelection == 'paper') {
+               return 'win';
+            } else {
+               return;
+            }
+         }
+
+
+         function computerPlay() {
+            randNum = Math.floor((Math.random() * 3) + 1);
+            switch(randNum){
+               case 1:
+               return 'rock';
+
+               case 2:
+               return 'paper';
+
+               case 3:
+               return 'scissors';
+            }
+         }
+
+         function capitalize(string) {
+            string = string.toLowerCase();
+            cap = string.slice(0,1);
+            cap = cap.toUpperCase();
+            string = string.replace(string[0], cap);
+            return string;
+         }
+
       </script>
    </body>
 </html>
