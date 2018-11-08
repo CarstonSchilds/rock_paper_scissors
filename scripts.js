@@ -7,6 +7,9 @@ const form = document.querySelector('#user-entry > form');
 const roundResults = document.querySelector('#round-results > h2');
 const paraCompScore = document.querySelector('#computer-score');
 const paraPlayScore = document.querySelector('#player-score');
+const continueBtn = document.createElement('button');
+const gameResults = document.querySelector('#game-results');
+let createdButton = false;
 let madeSelection = true;
 let gameRounds;
 let playerSelection;
@@ -17,23 +20,34 @@ let playerScore;
 let computerScore;
 let i = 0;
 
+
+
 startButton.addEventListener('click', checkStartConditions);
+
+function createButton() {
+   continueBtn.textContent = 'Continue';
+   continueBtn.classList.add('button');
+   continueBtn.id = 'continue';
+   createdButton = true;
+}
 
 function playGame() {
    i = 0;
+   gameResults.textContent = '';
    playerScore = 0;
    computerScore = 0;
+   paraPlayScore.textContent = playerScore;
+   paraCompScore.textContent = computerScore;
    removeForm();
-   buttons.forEach(button => {
-      button.addEventListener('click', playStart)
-   });
-   
    startTimeOut();
 }
 
 function playStart(e) {
    madeSelection = true;
    playerSelection = e.target.id;
+   buttons.forEach(button => {
+      button.removeEventListener('click', playStart)
+   });
    endTimeOut();
    computerPlay();
 }
@@ -44,6 +58,18 @@ function checkStartConditions() {
       alert('You didn\'t enter an integer!');
    } else {
       playGame();
+   }
+}
+
+function endTheGame() {
+   roundResults.textContent = '';
+   addForm();
+   if(playerScore == computerScore) {
+      gameResults.textContent = 'Looks like no one wins this game, maybe try again?';
+   } else if(playerScore > computerScore) {
+      gameResults.textContent = 'Congrats! You win the game, your reward is absolutely nothing but you can play again if you want.';
+   } else {
+      gameResults.textContent = 'Sorry but the computer beat you in a game of luck, don\'t worry we won\'t judge you if you play again.';
    }
 }
 
@@ -61,7 +87,10 @@ function endTimeOut() {
 
 function startTimeOut() {
    if(i < gameRounds && madeSelection == true) {
-      roundResults.textContent = '';
+      buttons.forEach(button => {
+         button.addEventListener('click', playStart)
+      });
+      roundResults.textContent = 'Which will you choose...';
       playerSelection = '';
       computerSelection = '';
       result = '';
@@ -74,10 +103,27 @@ function startTimeOut() {
    }
 }
 
+function resetTimeOut() {
+   continueBtn.removeEventListener('click', startTimeOut);
+   buttonsDiv.removeChild(continueBtn);
+   startTimeOut();
+}
+
 function queryTheUsersPresence() {
    alert('Are you still there?');
    madeSelection = false;
    startTimeOut();
+}
+
+function prepareForNextRound() {
+   if(createdButton) {
+      buttonsDiv.appendChild(continueBtn);
+      continueBtn.addEventListener('click', resetTimeOut);
+   } else {
+      createButton();
+      buttonsDiv.appendChild(continueBtn);
+      continueBtn.addEventListener('click', resetTimeOut);
+   }
 }
 
 function displayAndCalcScores() {
@@ -92,6 +138,7 @@ function displayAndCalcScores() {
    } else {
       roundResults.textContent = 'You both picked the same one! Nobody wins this round...';
    }
+   prepareForNextRound();
 }
 
 function seeWhoWins() {
@@ -118,12 +165,13 @@ function computerPlay() {
    switch(randNum){
       case 1:
       computerSelection = 'rock';
-
+      break;
       case 2:
       computerSelection = 'paper';
-
+      break;
       case 3:
       computerSelection = 'scissors';
+      break;
    }
    seeWhoWins();
 }
