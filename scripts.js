@@ -4,6 +4,9 @@ const buttonsDiv = document.querySelector('#buttons');
 const buttons = document.querySelectorAll('#buttons > .button');
 const formDiv = document.querySelector('#user-entry');
 const form = document.querySelector('#user-entry > form');
+const roundResults = document.querySelector('#round-results > h2');
+const paraCompScore = document.querySelector('#computer-score');
+const paraPlayScore = document.querySelector('#player-score');
 let madeSelection = true;
 let gameRounds;
 let playerSelection;
@@ -58,6 +61,7 @@ function endTimeOut() {
 
 function startTimeOut() {
    if(i < gameRounds && madeSelection == true) {
+      roundResults.textContent = '';
       playerSelection = '';
       computerSelection = '';
       result = '';
@@ -76,6 +80,20 @@ function queryTheUsersPresence() {
    startTimeOut();
 }
 
+function displayAndCalcScores() {
+   if(result == 'win') {
+      playerScore += 1;
+      paraPlayScore.textContent = playerScore;
+      roundResults.textContent = 'Congrats! The computer picked ' + computerSelection + ' so you win this round!';
+   } else if(result =='lose') {
+      computerScore += 1;
+      paraCompScore.textContent = computerScore;
+      roundResults.textContent = 'Sorry, the computer picked ' + computerSelection + ' so you lose this round, better luck next time.';
+   } else {
+      roundResults.textContent = 'You both picked the same one! Nobody wins this round...';
+   }
+}
+
 function seeWhoWins() {
    if(playerSelection == computerSelection) {
       result = 'tie';
@@ -92,6 +110,7 @@ function seeWhoWins() {
    } else {
       result = 'win';
    }
+   displayAndCalcScores();
 }
 
 function computerPlay() {
